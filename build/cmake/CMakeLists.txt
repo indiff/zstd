@@ -232,3 +232,11 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/zstdConfigVersion.cmake"
     DESTINATION ${ConfigPackageLocation}
     )
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/lib/libzstd.a
+    ${CMAKE_CURRENT_BINARY_DIR}/lib/libzstd.so.${zstd_VERSION}
+    ${CMAKE_CURRENT_BINARY_DIR}/lib/libzstd.so
+    ${CMAKE_CURRENT_BINARY_DIR}/lib/libzstd.so.1
+    DESTINATION lib64
+)
