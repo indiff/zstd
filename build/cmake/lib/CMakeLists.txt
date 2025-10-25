@@ -7,7 +7,7 @@
 # in the COPYING file in the root directory of this source tree).
 # ################################################################
 
-project(libzstd C ASM)
+project(libzstd C) # ASM language is conditionally enabled where supported
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 option(ZSTD_BUILD_STATIC "BUILD STATIC LIBRARIES" ON)
@@ -40,6 +40,7 @@ if (MSVC)
     add_compile_options(-DZSTD_DISABLE_ASM)
 else ()
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "amd64.*|AMD64.*|x86_64.*|X86_64.*" AND ${ZSTD_HAS_NOEXECSTACK})
+        enable_language(ASM)
         set(DecompressSources ${DecompressSources} ${LIBRARY_DIR}/decompress/huf_decompress_amd64.S)
     else()
         add_compile_options(-DZSTD_DISABLE_ASM)
@@ -97,9 +98,11 @@ if (ZSTD_LEGACY_SUPPORT)
             ${LIBRARY_LEGACY_DIR}/zstd_v07.h)
 endif ()
 
-if (MSVC)
+if (MSVC AND NOT (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
     set(MSVC_RESOURCE_DIR ${ZSTD_SOURCE_DIR}/build/VS2010/libzstd-dll)
     set(PlatformDependResources ${MSVC_RESOURCE_DIR}/libzstd-dll.rc)
+else()
+    set(PlatformDependResources)
 endif ()
 
 # Explicitly set the language to C for all files, including ASM files.
